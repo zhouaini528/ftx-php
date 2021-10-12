@@ -23,10 +23,4 @@ $ftx->setOptions([
     //'headers'=>['FTX-SUBACCOUNT'=>'xxxx']
 ]);
 
-try {
-    $result=$ftx->account()->get();
-    print_r($result);
-}catch (\Exception $e){
-    print_r($e->getMessage());
-}
-
+$ftx->wallet()->getBalances();

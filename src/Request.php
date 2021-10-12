@@ -78,10 +78,12 @@ class Request
      *
      * */
     protected function signature(){
+        $this->path='/api'.$this->path;
+
         if($this->authorization===true){
             $temp=$this->nonce.$this->type.$this->path;
             if(!empty($this->data)) $temp.=json_encode($this->data);
-            //echo $temp.PHP_EOL;die('hh');
+            //echo $temp.PHP_EOL;
             $this->signature = hash_hmac('sha256', $temp, $this->secret);
         }
     }
@@ -122,8 +124,8 @@ class Request
         if($this->type!='POST') $url.= empty($this->data) ? '' : '?'.http_build_query($this->data);
         else $this->options['body']=json_encode($this->data);
 
-        echo $this->type.PHP_EOL.$url.PHP_EOL;
-        print_r($this->options);
+        /*echo $this->type.PHP_EOL.$url.PHP_EOL;
+        print_r($this->options);*/
 
         $response = $client->request($this->type, $url, $this->options);
         return $response->getBody()->getContents();
