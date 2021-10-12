@@ -8,6 +8,7 @@ namespace Lin\Ftx;
 
 use Lin\Ftx\Api\Account;
 use Lin\Ftx\Api\Markets;
+use Lin\Ftx\Api\Orders;
 use Lin\Ftx\Api\Wallet;
 
 class Ftx
@@ -66,5 +67,12 @@ class Ftx
      * */
     function wallet(array $options=[]){
         return new Wallet($this->init());
+    }
+
+    /**
+     *
+     * */
+    function orders(array $options=[]){
+        return new Orders($this->init());
     }
 }

@@ -23,8 +23,30 @@ $ftx->setOptions([
     //'headers'=>['FTX-SUBACCOUNT'=>'xxxx']
 ]);
 
+
 try {
-    $result=$ftx->account()->get();
+    $result=$ftx->orders()->post([
+        'market'=>'BTC/USD',
+        'side'=>'buy',
+        'price'=>'10000',
+        'type'=>'limit',
+        'size'=>'1',
+        //'clientId'=>'1234567890',
+    ]);
+    print_r($result);
+}catch (\Exception $e){
+    print_r($e->getMessage());
+}
+
+try {
+    $result=$ftx->orders()->get([
+        'order_id'=>'1234567890',
+    ]);
+    print_r($result);
+
+    $result=$ftx->orders()->getByClientId([
+        'client_order_id'=>'1234567890',
+    ]);
     print_r($result);
 }catch (\Exception $e){
     print_r($e->getMessage());
@@ -32,9 +54,19 @@ try {
 
 
 try {
-    $result=$ftx->account()->getPositions();
+    $result=$ftx->orders()->delete([
+        'order_id'=>'1234567890',
+    ]);
+    print_r($result);
+
+    $result=$ftx->orders()->deleteByClientId([
+        'client_order_id'=>'1234567890',
+    ]);
     print_r($result);
 }catch (\Exception $e){
     print_r($e->getMessage());
 }
+
+
+
 
