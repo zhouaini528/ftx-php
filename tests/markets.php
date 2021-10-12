@@ -23,12 +23,12 @@ $ftx->setOptions([
     //'headers'=>['FTX-SUBACCOUNT'=>'xxxx']
 ]);
 
-/*try {
+try {
     $result=$ftx->markets()->gets();
     print_r($result);
 }catch (\Exception $e){
     print_r($e->getMessage());
-}*/
+}
 
 try {
     $result=$ftx->markets()->get([
