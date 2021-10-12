@@ -83,7 +83,7 @@ $ftx->setOptions([
 ]);
 ```
 
-### Exchange Spot
+### Exchange
 
 Market API [More](https://github.com/zhouaini528/ftx-php/tree/master/src/Api/Markets.php)
 
