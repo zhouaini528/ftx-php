@@ -1,14 +1,12 @@
 ### It is recommended that you read the official document first
 
-Coinex 现货文档 [https://github.com/coinexcom/coinex_exchange_api/wiki](https://github.com/coinexcom/coinex_exchange_api/wiki)
+FTX 文档 [https://docs.ftx.com/](https://docs.ftx.com/)
 
-Coinex 期货文档 [https://github.com/coinexcom/coinex_perpetual_api](https://github.com/coinexcom/coinex_perpetual_api)
-
-所有接口方法的初始化都与coinex提供的方法相同。更多细节 [src/api](https://github.com/zhouaini528/coinex-php/tree/master/src/Api)
+所有接口方法的初始化都与FTX提供的方法相同。更多细节 [src/api](https://github.com/zhouaini528/ftx-php/tree/master/src/Api)
 
 大部分的接口已经完成，使用者可以根据我的设计方案继续扩展，欢迎与我一起迭代它。
 
-[English Document](https://github.com/zhouaini528/coinex-php/blob/master/README.md)
+[English Document](https://github.com/zhouaini528/ftx-php/blob/master/README.md)
 
 QQ交流群：668421169
 
@@ -54,212 +52,57 @@ QQ交流群：668421169
 
 [Coinex](https://github.com/zhouaini528/coinex-php)
 
+[FTX](https://github.com/zhouaini528/ftx-php)
+
 **如果没有找到你想要的交易所SDK你可以告诉我，我来加入它们。**
 
 #### Installation
 ```
-composer require linwj/coinex
+composer require linwj/ftx
 ```
 
-Support for more request Settings
+支持更多请求设置
 ```php
-//现货初始化
-use Lin\Coinex\CoinexExchange;
-$coinex=new CoinexExchange();
+//spot
+use Lin\Ftx\Ftx;
+$ftx=new Ftx();
+//or
+$ftx=new Ftx($key,$secret);
 
-//期货初始化
-use Lin\Coinex\CoinexPerpetual;
-$coinex=new CoinexPerpetual();
-
-//支持更多的请求设置
-$coinex->setOptions([
-    //设置请求过期时间，默认60s
+//You can set special needs
+$ftx->setOptions([
+    //Set the request timeout to 60 seconds by default
     'timeout'=>10,
 
     //https://github.com/guzzle/guzzle
-    'proxy'=>[],
+    //'proxy'=>[],
 
     //https://www.php.net/manual/en/book.curl.php
-    'curl'=>[],
+    //'curl'=>[],
+
+    //FTX-SUBACCOUNT (optional): 子账号ID,选填
+    //'headers'=>['FTX-SUBACCOUNT'=>'xxxx']
 ]);
 ```
 
-### 现货交易
+### 交易所
 
-市场 API [More](https://github.com/zhouaini528/coinex-php/tree/master/src/Api/Exchange/Market.php)
-
-```php
-$coinex=new CoinexExchange();
-
-try {
-    $result=$coinex->market()->getList();
-    print_r($result);
-}catch (\Exception $e){
-    print_r(json_decode($e->getMessage(),true));
-}
-
-try {
-    $result=$coinex->market()->getTicker([
-        'market'=>'BCHBTC'
-    ]);
-    print_r($result);
-}catch (\Exception $e){
-    print_r(json_decode($e->getMessage(),true));
-}
-
-try {
-    $result=$coinex->market()->getDepth([
-        'market'=>'BCHBTC',
-        'merge'=>'0.1'
-    ]);
-    print_r($result);
-}catch (\Exception $e){
-    print_r(json_decode($e->getMessage(),true));
-}
-
-try {
-    $result=$coinex->market()->getKline([
-        'market'=>'BCHBTC',
-        'type'=>'4hour'
-    ]);
-    print_r($result);
-}catch (\Exception $e){
-    print_r(json_decode($e->getMessage(),true));
-}
-```
-
-账户 API [More](https://github.com/zhouaini528/coinex-php/tree/master/src/Api/Exchange/Account.php)
+市场 API [More](https://github.com/zhouaini528/ftx-php/tree/master/src/Api/Markets.php)
 
 ```php
-$coinex=new CoinexExchange($key,$secret);
+$ftx=new Ftx();
 
 try {
-    $result=$coinex->account()->getBalanceInfo([
-        //You can 'access_id' and 'tonxe' leave it blank
-        'access_id'=>$key,
-        'tonce'=>time().'000',
-    ]);
-
-    //You can 'access_id' and 'tonxe' leave it blank
-    $result=$coinex->account()->getBalanceInfo();
-    print_r($result);
-}catch (\Exception $e){
-    print_r(json_decode($e->getMessage(),true));
-}
-
-try {
-    //You can 'access_id' and 'tonxe' leave it blank
-    $result=$coinex->account()->getBalanceCoinWithdraw();
-    print_r($result);
-}catch (\Exception $e){
-    print_r(json_decode($e->getMessage(),true));
-}
-
-try {
-    $result=$coinex->account()->getCreditInfo();
-    print_r($result);
-}catch (\Exception $e){
-    print_r(json_decode($e->getMessage(),true));
-}
-```
-
-
-交易 API [More](https://github.com/zhouaini528/coinex-php/tree/master/src/Api/Exchange/Trading.php)
-
-```php
-$coinex=new CoinexExchange($key,$secret);
-
-try {
-    //You can 'access_id' and 'tonxe' leave it blank
-    $result=$coinex->trading()->postMarket([
-        //'access_id'=>'xxxxx',
-        //'tonce'=>time().'000',
-        'market'=>'BCHBTC',
-        'type'=>'sell',
-        'amount'=>'1',
-        'client_id'=>'99999999',
-    ]);
-    print_r($result);
-}catch (\Exception $e){
-    print_r(json_decode($e->getMessage(),true));
-}
-
-try {
-    //You can 'access_id' and 'tonxe' leave it blank
-    $result=$coinex->trading()->getStatus([
-        //'access_id'=>'xxxxx',
-        //'tonce'=>time().'000',
-        'id'=>'99999999',
-        'market'=>'BCHBTC',
-    ]);
-    print_r($result);
-}catch (\Exception $e){
-    print_r(json_decode($e->getMessage(),true));
-}
-
-try {
-    //You can 'access_id' and 'tonxe' leave it blank
-    $result=$coinex->trading()->deletePending([
-        'id'=>'9999999',
-        'market'=>'BCHBTC',
-        'type'=>'0'
-    ]);
-    print_r($result);
-}catch (\Exception $e){
-    print_r(json_decode($e->getMessage(),true));
-}
-```
-
-
-保证金 API [More](https://github.com/zhouaini528/coinex-php/tree/master/src/Api/Exchange/Margin.php)
-
-```php
-$coinex=new CoinexExchange($key,$secret);
-
-try {
-    //You can 'access_id' and 'tonxe' leave it blank
-    $result=$coinex->margin()->getAccount([
-        'market'=>'BCHBTC'
-    ]);
-    print_r($result);
-}catch (\Exception $e){
-    print_r(json_decode($e->getMessage(),true));
-}
-
-try {
-    $result=$coinex->margin()->getMarket();
-    print_r($result);
-}catch (\Exception $e){
-    print_r(json_decode($e->getMessage(),true));
-}
-```
-
-More Test [more](https://github.com/zhouaini528/coinex-php/blob/master/tests/exchange)
-
-### 期货交易
-
-市场 API [More](https://github.com/zhouaini528/coinex-php/tree/master/src/Api/Perpetual/Market.php)
-
-```php
-$coinex=new CoinexPerpetual();
-
-try {
-    $result=$coinex->market()->getList();
+    $result=$ftx->markets()->gets();
     print_r($result);
 }catch (\Exception $e){
     print_r($e->getMessage());
 }
 
 try {
-    $result=$coinex->market()->getLimitConfig();
-    print_r($result);
-}catch (\Exception $e){
-    print_r($e->getMessage());
-}
-
-try {
-    $result=$coinex->market()->getTicker([
-        'market'=>'BTCUSD'
+    $result=$ftx->markets()->get([
+        'market_name'=>'BTC/USD',// BTC/USD   BTC-PERP  BTC-0626
+        //'depth'=>'10'
     ]);
     print_r($result);
 }catch (\Exception $e){
@@ -267,17 +110,9 @@ try {
 }
 
 try {
-    $result=$coinex->market()->getTickerAll();
-    print_r($result);
-}catch (\Exception $e){
-    print_r($e->getMessage());
-}
-
-try {
-    $result=$coinex->market()->getDepth([
-        'market'=>'BTCUSD',
-        'merge'=>'0.1',
-        'limit'=>'10'
+    $result=$ftx->markets()->getOrderBook([
+        'market_name'=>'BTC-PERP',// BTC/USD   BTC-PERP  BTC-0626
+        //'depth'=>'10'
     ]);
     print_r($result);
 }catch (\Exception $e){
@@ -285,8 +120,19 @@ try {
 }
 
 try {
-    $result=$coinex->market()->getDeals([
-        'market'=>'BTCUSD',
+    $result=$ftx->markets()->getTrades([
+        'market_name'=>'BTC-0626',// BTC/USD   BTC-PERP  BTC-0626
+        //'depth'=>'10'
+    ]);
+    print_r($result);
+}catch (\Exception $e){
+    print_r($e->getMessage());
+}
+
+try {
+    $result=$ftx->markets()->getCandles([
+        'market_name'=>'BTC-0628',// BTC/USD   BTC-PERP  BTC-0626
+        'resolution'=>'60'
     ]);
     print_r($result);
 }catch (\Exception $e){
@@ -294,17 +140,41 @@ try {
 }
 ```
 
-订单 API [More](https://github.com/zhouaini528/coinex-php/tree/master/src/Api/Perpetual/Order.php)
+账户 API [More](https://github.com/zhouaini528/ftx-php/tree/master/src/Api/Account.php)
 
 ```php
-$coinex=new CoinexPerpetual($key,$secret);
+$ftx=new Ftx($key,$secret);
 
 try {
-    $result=$coinex->order()->postPutMarket([
-        'market'=>'BTCUSD',
-        'side'=>'2',
-        'amount'=>'10',
-        'client_id'=>'xxxxxx',
+    $result=$ftx->account()->get();
+    print_r($result);
+}catch (\Exception $e){
+    print_r($e->getMessage());
+}
+
+
+try {
+    $result=$ftx->account()->getPositions();
+    print_r($result);
+}catch (\Exception $e){
+    print_r($e->getMessage());
+}
+```
+
+
+订单 API [More](https://github.com/zhouaini528/ftx-php/tree/master/src/Api/Orders.php)
+
+```php
+$ftx=new Ftx($key,$secret);
+
+try {
+    $result=$ftx->orders()->post([
+        'market'=>'BTC/USD',
+        'side'=>'buy',
+        'price'=>'10000',
+        'type'=>'limit',
+        'size'=>'1',
+        //'clientId'=>'1234567890',
     ]);
     print_r($result);
 }catch (\Exception $e){
@@ -312,35 +182,28 @@ try {
 }
 
 try {
-    $result=$coinex->order()->postPutStopLimit([
-        'market'=>'BTCUSD',
-        'side'=>'2',
-        'amount'=>'10',
-        'client_id'=>'xxxxxx',
+    $result=$ftx->orders()->get([
+        'order_id'=>'1234567890',
+    ]);
+    print_r($result);
 
-        'stop_type'=>'2',
-        'stop_price'=>'10000',
-        'price'=>'9000',
+    $result=$ftx->orders()->getByClientId([
+        'client_order_id'=>'1234567890',
     ]);
     print_r($result);
 }catch (\Exception $e){
     print_r($e->getMessage());
 }
 
-try {
-    $result=$coinex->order()->getStatus([
-        'market'=>'BTCUSD',
-        'order_id'=>'9999999',
-    ]);
-    print_r($result);
-}catch (\Exception $e){
-    print_r($e->getMessage());
-}
 
 try {
-    $result=$coinex->order()->postCancel([
-        'market'=>'BTCUSD',
-        'order_id'=>'9999999',
+    $result=$ftx->orders()->delete([
+        'order_id'=>'1234567890',
+    ]);
+    print_r($result);
+
+    $result=$ftx->orders()->deleteByClientId([
+        'client_order_id'=>'1234567890',
     ]);
     print_r($result);
 }catch (\Exception $e){
@@ -348,42 +211,4 @@ try {
 }
 ```
 
-仓位 API [More](https://github.com/zhouaini528/coinex-php/tree/master/src/Api/Perpetual/Position.php)
-
-```php
-$coinex=new CoinexPerpetual($key,$secret);
-
-try {
-    $result=$coinex->position()->getPending([
-        'market'=>'BTCUSD',
-    ]);
-    print_r($result);
-}catch (\Exception $e){
-    print_r($e->getMessage());
-}
-
-try {
-    $result=$coinex->position()->getFunding([
-        'market'=>'BTCUSD',
-        'offset'=>'10',
-        'limit'=>'10'
-    ]);
-    print_r($result);
-}catch (\Exception $e){
-    print_r($e->getMessage());
-}
-
-try {
-    $result=$coinex->position()->postAdjustMargin([
-        'market'=>'BTCUSD',
-        'amount'=>'1',
-        'type'=>'1',
-    ]);
-    print_r($result);
-}catch (\Exception $e){
-    print_r($e->getMessage());
-}
-```
-
-More Test [more](https://github.com/zhouaini528/coinex-php/tree/master/tests/perpetual)
-
+更多用例 [more](https://github.com/zhouaini528/ftx-php/tree/master/tests)
