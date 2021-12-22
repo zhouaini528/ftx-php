@@ -82,7 +82,11 @@ class Request
 
         if($this->authorization===true){
             $temp=$this->nonce.$this->type.$this->path;
-            if(!empty($this->data)) $temp.=json_encode($this->data);
+            if($this->type!='POST'){
+                if(!empty($this->data)) $temp.='?'.http_build_query($this->data);
+            } else {
+                if(!empty($this->data)) $temp.=json_encode($this->data);
+            }
             //echo $temp.PHP_EOL;
             $this->signature = hash_hmac('sha256', $temp, $this->secret);
         }
